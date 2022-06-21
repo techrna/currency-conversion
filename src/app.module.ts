@@ -14,6 +14,6 @@ import { CurrencyModule } from './currency/currency.module';
   CurrencyModule
 ],
   controllers: [AppController, CurrencyController, ],
-  providers: [AppService, CurrencyService, ],
+  providers: [AppService, ],
 })
 export class AppModule {}
