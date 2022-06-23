@@ -7,11 +7,21 @@ import { Rate } from './schema/rates.schema';
 export class CurrencyController {
     constructor(private currencyService:CurrencyService){}
     @Get('base')
-    getAllBase():Promise<Rate[]>{
-        return this.currencyService.getAllBase();
+    async getAllBase(){
+         
+        const data=await this.currencyService.getAllBase().then((data)=>{
+            return data.map(value=>{ 
+                console.log(value['_id']['base'])
+                let locObj={}
+                locObj[value['_id']['base']]=value['_id']['desc']
+                console.log()
+                return locObj
+            })
+        });
+        return data
     }
     @Get('rates/:base')
-    getBaseAllRates(@Param('base') base:string):Promise<Rate>{
+    getBaseAllRates(@Param('base') base:string):Promise<Rate[]>{
         return this.currencyService.getBaseAllRates(base);
     }
 

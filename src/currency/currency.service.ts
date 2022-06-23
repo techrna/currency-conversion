@@ -9,11 +9,13 @@ export class CurrencyService {
 
     async getAllBase():Promise<Rate[]>
     {
-        return this.rateModel.find({},{base:1,desc:1,_id:0});
+        return this.rateModel.aggregate([
+            {"$group":{'_id':{"desc":"$desc","base":"$base"}}}
+    ]);
     }
-    async getBaseAllRates(base:string):Promise<Rate>
+    async getBaseAllRates(base:string):Promise<Rate[]>
     {
-        return this.rateModel.findOne({"base":base},{rates:1,_id:0});
+        return this.rateModel.find({"base":base},{rates:1,date:1,_id:0}).sort({'date':1}).limit(1);
     }
     
 }
