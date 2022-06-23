@@ -15,7 +15,7 @@ export class CurrencyService {
     }
     async getBaseAllRates(base:string):Promise<Rate[]>
     {
-        return this.rateModel.find({"base":base},{rates:1,date:1,_id:0}).sort({'date':1}).limit(1);
+        return this.rateModel.find({"base":base},{rates:1,date:1,_id:0}).sort({'date':-1}).limit(1);
     }
     
 }

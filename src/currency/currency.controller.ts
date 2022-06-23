@@ -33,8 +33,20 @@ export class CurrencyController {
 
     async convertRate(@Query('base') base:string,@Query('to') to:string,@Query('amount') amount:string,@Res() resp:Response):Promise<Response>{
         const data=await this.currencyService.getBaseAllRates(base);
-        const result=parseFloat(data["rates"][to])*parseFloat(amount)
+        if(base==to)
+        {
+            return  resp.status(HttpStatus.OK).json({"amount":amount});
+        }
+       if(!data[0])
+       {
+        return  resp.status(HttpStatus.BAD_REQUEST).json({"error":"provide valid data"});
+       }
+        if (data[0]["rates"][to]){
+        const result=parseFloat(data[0]["rates"][to])*parseFloat(amount)
         return  resp.status(HttpStatus.OK).json({"amount":result});
+        }  else{
+            return  resp.status(HttpStatus.BAD_REQUEST).json({"error":"provide valid data"});
+        }
         
     }
 }
