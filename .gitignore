@@ -36,3 +36,7 @@ lerna-debug.log*
 
 .prod.env
 .dev.env
+.serverless/cloudformation-template-create-stack.json
+.serverless/cloudformation-template-update-stack.json
+.serverless/serverless-example.zip
+.serverless/serverless-state.json

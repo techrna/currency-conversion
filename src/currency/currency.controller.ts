@@ -4,6 +4,8 @@ import { Response } from 'express';
 import { CurrencyService } from './currency.service';
 import { Rate } from './schema/rates.schema';
 
+import { logger, tracer, metrics } from "../powertools/utilities"
+import { MetricUnits } from '@aws-lambda-powertools/metrics';
 @Controller('currency')
 export class CurrencyController {
     constructor(private currencyService:CurrencyService){}
@@ -12,11 +14,15 @@ export class CurrencyController {
     async getAllBase(){
          
         const data=await this.currencyService.getAllBase().then((data)=>{
+            logger.info("data log",{details:data});
+            metrics.addMetric('dataRetrieved', MetricUnits.Count, 1);
+            metrics.addMetric('dataRetrieved', MetricUnits.Count, 2);
+            metrics.publishStoredMetrics();
             return data.map(value=>{ 
-                console.log(value['_id']['base'])
+                // console.log(value['_id']['base'])
                 let locObj={}
                 locObj[value['_id']['base']]=value['_id']['desc']
-                console.log()
+                // console.log()
                 return locObj
             })
         });

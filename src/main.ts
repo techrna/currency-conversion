@@ -1,16 +1,24 @@
 import { NestFactory } from '@nestjs/core';
+import serverlessExpress from '@vendia/serverless-express';
+import { Callback, Context, Handler } from 'aws-lambda';
+
 import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-async function bootstrap() {
+
+let server: Handler;
+
+async function bootstrap(): Promise<Handler> {
   const app = await NestFactory.create(AppModule);
-  const config = new DocumentBuilder()
-  .setTitle('Currency example')
-  .setDescription('The Currency API description')
-  .setVersion('1.0')
-  .addTag('currency')
-  .build();
-const document = SwaggerModule.createDocument(app, config);
-SwaggerModule.setup('api', app, document);
-await app.listen(process.env.PORT || 3000);
+  await app.init();
+
+  const expressApp = app.getHttpAdapter().getInstance();
+  return serverlessExpress({ app: expressApp });
 }
-bootstrap();
+
+export const handler: Handler = async (
+  event: any,
+  context: Context,
+  callback: Callback,
+) => {
+  server = server ?? (await bootstrap());
+  return server(event, context, callback);
+};
